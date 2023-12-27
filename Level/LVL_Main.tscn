@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://gm5u0x744dqd"]
+
+[ext_resource type="Script" path="res://Script/Gestion.gd" id="1_475g8"]
+
+[node name="LVL_Main" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+scale = Vector2(27, 2.56)
+limit_left = 0
+limit_top = 0
+limit_right = 1000
+limit_bottom = 1000
+
+[node name="Gestion" type="Node2D" parent="."]
+script = ExtResource("1_475g8")

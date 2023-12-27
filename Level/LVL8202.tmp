@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://gm5u0x744dqd"]
+
+[ext_resource type="PackedScene" uid="uid://jauq7vj30gd" path="res://Object/asteroid.tscn" id="1_x2d6r"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+scale = Vector2(27, 2.56)
+limit_left = 0
+limit_top = 0
+
+[node name="Asteroid" parent="." instance=ExtResource("1_x2d6r")]
+position = Vector2(212, 299)
+
+[node name="Asteroid2" parent="." instance=ExtResource("1_x2d6r")]
+position = Vector2(451, 494)
+
+[node name="Asteroid3" parent="." instance=ExtResource("1_x2d6r")]
+position = Vector2(718, 671)

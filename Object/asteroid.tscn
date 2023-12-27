@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://jauq7vj30gd"]
+
+[ext_resource type="Script" path="res://Script/Asteroid.gd" id="1_tbnvd"]
+[ext_resource type="Texture2D" uid="uid://508spcdf2pm2" path="res://Asset/Proto_rock.png" id="2_qjktr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8rek2"]
+size = Vector2(96.2979, 98.3261)
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+script = ExtResource("1_tbnvd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1.90735e-06, 1.90735e-06)
+scale = Vector2(1.03844, 1.01702)
+shape = SubResource("RectangleShape2D_8rek2")
+disabled = true
+debug_color = Color(0, 0.6, 0.701961, 0.419608)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_qjktr")
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
+position = Vector2(-40, -40)
+rect = Rect2(-10, -10, 100, 100)
