@@ -3,7 +3,7 @@ extends CharacterBody2D
 @onready var visible_on_screen : VisibleOnScreenEnabler2D = $VisibleOnScreenEnabler2D
 var already_on_screen : bool = false
 
-var velocity_multiplier : int = 5
+var velocity_multiplier : int = 1
 var side : int
 
 func _ready():

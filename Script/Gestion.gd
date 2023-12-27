@@ -5,18 +5,22 @@ const asteroid = preload("res://Object/asteroid.tscn")
 const texture_placeholder_asteroid_control = preload("res://Asset/Proto_user_rock.png")
 const texture_placeholder_asteroid = preload("res://Asset/Proto_rock.png")
 
-var asteroid_on_screen : Array = [null, null, null, null, null, null, null, null, null, null, null]
+var asteroid_on_screen : Array = []
 var place_on_array : int = 0
 var i : int = 0
 var asteroid_on_control : Node2D
 
-const max_time : int = 1
+const max_time : int = 2
 var time_left : float = max_time
 const max_asteroid : int = 5
 var idx : int = 0
 
 
 func _ready():
+	
+	for _i in max_asteroid:
+		asteroid_on_screen.append(null)
+		pass
 	
 	# Spawn the first asteroid
 	create_new_asteroid()
@@ -58,17 +62,37 @@ func _process(delta):
 		
 	#Change the asteroid on control
 	if Input.is_action_just_pressed("Change_Control"):
+		
+		#Thid case (but the first cause it's logic), the next object isn't an asteroid
 		if asteroid_on_screen[i] == null:
-			for _i in asteroid_on_screen.size():
-				if asteroid_on_screen[_i] != null: i = _i
+			var end_loop : bool = true
+			var init_i = i - 1
+			if init_i == - 1: init_i = asteroid_on_screen.size() - 1
+			#We make a loop of the array from i to i 
+			while end_loop:
+				print(i, "test")
+				print(init_i, "init_i")
+				i += 1
+				if i >= asteroid_on_screen.size(): i=0
+				if i == init_i:
+					print("We don't find another asteroid, wait some second please !")
+					end_loop = false
+					pass 
+				if asteroid_on_screen[i] != null: end_loop = false
 				pass
 			pass
+			
+		#Fist case, the next object is an asteroid and we have the control of an asteroid
 		if asteroid_on_screen[i] != null and asteroid_on_control != null:
 			#Old asteroid on control get neutral texture
+			var asteroid_control : Node2D = asteroid_on_control.get_child(3)
+			asteroid_control.queue_free()
 			var asteroid_sprite : Sprite2D = asteroid_on_control.get_child(1)
 			asteroid_sprite.texture = texture_placeholder_asteroid
 			take_control()
 			pass
+			
+		#Second case, the next object is an asteroid and we dont have the control of an asteroid
 		if asteroid_on_screen[i] != null and asteroid_on_control == null:
 			take_control()
 			pass
@@ -78,7 +102,7 @@ func _process(delta):
 		
 	#asteroid_on_screen.sort()
 	#print(i) #UN PRINT
-	#print(asteroid_on_screen) #UN PRINT
+#	print(asteroid_on_screen) #UN PRINT
 	#print(asteroid_on_control) #UN PRINT
 	pass
 
