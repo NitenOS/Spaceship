@@ -2,18 +2,25 @@ extends Node2D
 
 const control = preload("res://Object/Control_Astroid.tscn")
 const asteroid = preload("res://Object/asteroid.tscn")
+const spaceship = preload("res://Object/spaceship.tscn")
 const texture_placeholder_asteroid_control = preload("res://Asset/Proto_user_rock.png")
-const texture_placeholder_asteroid = preload("res://Asset/Proto_rock.png")
+const texture_placeholder_asteroid = preload("res://Asset/Proto_rock.png") 
 
 var asteroid_on_screen : Array = []
 var place_on_array : int = 0
 var i : int = 0
 var asteroid_on_control : Node2D
+const max_asteroid : int = 10
 
-const max_time : int = 2
+var current_spaceship : CharacterBody2D
+var spaceship_current_life : int
+var spaceship_current_look : int
+const spaceship_max_life : int = 3
+var grid_coord : Array
+var spaceship_grid : Array
+
+const max_time : float = 0.5
 var time_left : float = max_time
-const max_asteroid : int = 5
-var idx : int = 0
 
 
 func _ready():
@@ -24,13 +31,13 @@ func _ready():
 	
 	# Spawn the first asteroid
 	create_new_asteroid()
+	create_new_spaceship(500, 500)
+	gid_the_board()
+	
+	spaceship_grid = current_spaceship.set_menace(grid_coord, 100)
 	
 	# Take control of the first asteroid
-	asteroid_on_control = asteroid_on_screen[i]
-	var asteroid_sprite : Sprite2D = asteroid_on_control.get_child(1)
-	asteroid_sprite.texture = texture_placeholder_asteroid_control
-	var new_control = control.instantiate()
-	asteroid_on_control.add_child(new_control)
+	take_control()
 	i += 1
 	pass
 	
@@ -39,10 +46,12 @@ func _process(delta):
 	if wait_Xs(delta) :
 		create_new_asteroid()
 		time_left = max_time
-		print("oui")
 		pass
 		
-	# With this method we check le whole array every frame
+	spaceship_current_look = spaceship_look_direction()
+		
+	#Check if a asteroid is out-of-screen
+	# With this method we check le whole array every frame (I need to fix that... later)
 	for j in asteroid_on_screen.size():
 		if asteroid_on_screen[j] != null:
 			if asteroid_on_screen[j].visible_on_screen.is_on_screen() == false and asteroid_on_screen[j].already_on_screen == true:
@@ -52,7 +61,7 @@ func _process(delta):
 			pass
 		pass
 		
-
+	#Check if the asteroid on control is out-of-screen
 	if asteroid_on_control != null:
 		if asteroid_on_control.visible_on_screen.is_on_screen() == false and asteroid_on_control.already_on_screen == true:
 			asteroid_on_control.queue_free()
@@ -70,8 +79,6 @@ func _process(delta):
 			if init_i == - 1: init_i = asteroid_on_screen.size() - 1
 			#We make a loop of the array from i to i 
 			while end_loop:
-				print(i, "test")
-				print(init_i, "init_i")
 				i += 1
 				if i >= asteroid_on_screen.size(): i=0
 				if i == init_i:
@@ -96,34 +103,25 @@ func _process(delta):
 		if asteroid_on_screen[i] != null and asteroid_on_control == null:
 			take_control()
 			pass
+			
 		i += 1
 		if i >= asteroid_on_screen.size(): i=0
 		pass
 		
-	#asteroid_on_screen.sort()
-	#print(i) #UN PRINT
-#	print(asteroid_on_screen) #UN PRINT
-	#print(asteroid_on_control) #UN PRINT
 	pass
 
-#Give the control of an asteroid to the player
-func take_control():
-
-	asteroid_on_control = asteroid_on_screen[i]
-	print(asteroid_on_screen[i])
+func create_new_spaceship(_position_x, _posistion_y):
 	
-	#New asteroid on control get control texture
-	var asteroid_sprite : Sprite2D= asteroid_on_control.get_child(1)
-	asteroid_sprite.texture = texture_placeholder_asteroid_control
-	var new_control = control.instantiate()
-	asteroid_on_control.add_child(new_control)
+	var new_spaceship = spaceship.instantiate()
+	new_spaceship.position = Vector2(_position_x, _posistion_y)
+	current_spaceship = new_spaceship
+	add_child(new_spaceship)
 	pass
 
 #Create an asteroid
 func create_new_asteroid():
 	
 	if asteroid_on_screen[place_on_array] == null:
-		print(place_on_array)
 		var new_asteroid = asteroid.instantiate()
 		asteroid_on_screen[place_on_array] = new_asteroid
 		add_child(new_asteroid)
@@ -132,14 +130,66 @@ func create_new_asteroid():
 	if place_on_array >= asteroid_on_screen.size(): place_on_array = 0
 	pass
 
+#Give the control of an asteroid to the player
+func take_control():
+	
+	asteroid_on_control = asteroid_on_screen[i]
+	
+	#New asteroid on control get control texture
+	var asteroid_sprite : Sprite2D = asteroid_on_control.get_child(1)
+	asteroid_sprite.texture = texture_placeholder_asteroid_control
+	var new_control = control.instantiate()
+	asteroid_on_control.add_child(new_control)
+	pass
+
 #A simple func for wait
 func wait_Xs(_delta):
 	if time_left > 0:
 		time_left -= _delta
-		#print(time_left) #UN PRINT
 		return false
 	else:
 		time_left = 0
 		return true
 		pass
+	pass
+	
+func spaceship_look_direction() -> int:
+	var closer_asteroid : int
+	var shorter_distance : float
+	for _i in max_asteroid:
+		if asteroid_on_screen[_i] != null : 
+			if shorter_distance == 0.0:
+				closer_asteroid = _i
+				shorter_distance = current_spaceship.position.distance_to(asteroid_on_screen[closer_asteroid].position)
+				pass
+			else:
+				if shorter_distance > current_spaceship.position.distance_to(asteroid_on_screen[_i].position): 
+					closer_asteroid = _i
+					shorter_distance = current_spaceship.position.distance_to(asteroid_on_screen[closer_asteroid].position)
+					pass
+				pass
+			pass
+		pass
+	current_spaceship.rotation = current_spaceship.position.angle_to_point(asteroid_on_screen[closer_asteroid].position)
+	return closer_asteroid
+
+func gid_the_board():
+	var size_case_board : int = 100
+	var grid : int = 1000 / size_case_board
+	for i_ in grid:
+		for j_ in grid:
+			if i_ != 0 and j_ !=0 : grid_coord.append(Vector2(i_ * size_case_board, j_ * size_case_board))
+			pass
+		pass
+	pass
+
+func _draw():
+	for i_ in grid_coord:
+		draw_circle(i_, 5, "BLACK")
+	for i_ in spaceship_grid:
+		draw_circle(i_, 5, "RED")
+	pass
+
+func check_menace_board():
+	
 	pass

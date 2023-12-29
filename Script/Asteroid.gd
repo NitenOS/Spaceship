@@ -2,27 +2,30 @@ extends CharacterBody2D
 
 @onready var visible_on_screen : VisibleOnScreenEnabler2D = $VisibleOnScreenEnabler2D
 var already_on_screen : bool = false
+const PROTO_ROCK = preload("res://Asset/Proto_rock.png")
+@onready var sprite_previsualisation : Sprite2D = $Sprite2D/Sprite2D
 
 var velocity_multiplier : int = 1
 var side : int
 
 func _ready():
 	spawn_off_screen()
+	view_previsualisation()
 	pass
 
 func _process(delta):
-	#print(velocity)
 	if visible_on_screen.is_on_screen():
 		already_on_screen = true
 	pass
-
+	sprite_previsualisation.position = (position * velocity) * delta 
 func _physics_process(delta):
 	move_and_slide()
-	#if is_off_scenne():
-		#queue_free()
-		#pass
 	pass
 	
+func view_previsualisation():
+	sprite_previsualisation.texture = PROTO_ROCK
+	sprite_previsualisation.modulate.a =  0.5
+	pass
 
 func is_off_scenne() -> bool:
 	var is_off_screen : bool = false

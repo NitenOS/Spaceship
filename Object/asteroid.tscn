@@ -7,6 +7,7 @@
 size = Vector2(96.2979, 98.3261)
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
+scale = Vector2(0.5, 0.5)
 script = ExtResource("1_tbnvd")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -18,6 +19,8 @@ debug_color = Color(0, 0.6, 0.701961, 0.419608)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_qjktr")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sprite2D"]
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
 position = Vector2(-40, -40)

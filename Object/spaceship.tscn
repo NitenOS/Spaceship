@@ -1,11 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://b2hghaqtv7gtp"]
+[gd_scene load_steps=4 format=3 uid="uid://b2hghaqtv7gtp"]
 
+[ext_resource type="Script" path="res://Script/spaceship.gd" id="1_5yr10"]
 [ext_resource type="Texture2D" uid="uid://dolducbtwfp1b" path="res://Asset/Proto_ship.png" id="1_rkmgp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ykotx"]
 size = Vector2(100, 100)
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
+scale = Vector2(0.5, 0.5)
+script = ExtResource("1_5yr10")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ykotx")
