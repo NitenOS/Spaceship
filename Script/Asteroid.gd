@@ -7,6 +7,7 @@ const PROTO_ROCK = preload("res://Asset/Proto_rock.png")
 
 var velocity_multiplier : int = 1
 var side : int
+var timer_ : float	
 
 func _ready():
 	spawn_off_screen()
@@ -16,15 +17,20 @@ func _ready():
 func _process(delta):
 	if visible_on_screen.is_on_screen():
 		already_on_screen = true
-	pass
-	sprite_previsualisation.position = (position * velocity) * delta 
+		pass
+	timer_ = timer_ + delta
+	if timer_ > 0.1:
+		sprite_previsualisation.position = position * velocity * delta
+		timer_ = fmod(timer_, 0.1)
+		pass
+
 func _physics_process(delta):
 	move_and_slide()
 	pass
-	
+
 func view_previsualisation():
 	sprite_previsualisation.texture = PROTO_ROCK
-	sprite_previsualisation.modulate.a =  0.5
+	sprite_previsualisation.modulate.a =  0.0
 	pass
 
 func is_off_scenne() -> bool:

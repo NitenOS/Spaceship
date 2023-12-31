@@ -10,18 +10,20 @@ var asteroid_on_screen : Array = []
 var place_on_array : int = 0
 var i : int = 0
 var asteroid_on_control : Node2D
-const max_asteroid : int = 10
+const max_asteroid : int = 20
 
 var current_spaceship : CharacterBody2D
+var spaceship_init_location := Vector2(500, 500)
 var spaceship_current_life : int
 var spaceship_current_look : int
 const spaceship_max_life : int = 3
 var grid_coord : Array
 var spaceship_grid : Array
+var spaceship_grid_menace : Array
+var spaceship_as_location_to_move : Vector2 = spaceship_init_location
 
 const max_time : float = 0.5
 var time_left : float = max_time
-
 
 func _ready():
 	
@@ -33,6 +35,7 @@ func _ready():
 	create_new_asteroid()
 	create_new_spaceship(500, 500)
 	gid_the_board()
+	spaceship_grid_menace = check_menace_board()
 	
 	spaceship_grid = current_spaceship.set_menace(grid_coord, 100)
 	
@@ -48,7 +51,7 @@ func _process(delta):
 		time_left = max_time
 		pass
 		
-	spaceship_current_look = spaceship_look_direction()
+	#if current_spaceship.is_moving == false: spaceship_current_look = spaceship_look_direction()
 		
 	#Check if a asteroid is out-of-screen
 	# With this method we check le whole array every frame (I need to fix that... later)
@@ -108,12 +111,31 @@ func _process(delta):
 		if i >= asteroid_on_screen.size(): i=0
 		pass
 		
+
+	
+	spaceship_grid_menace = check_menace_board()
+	queue_redraw()
+	if spaceship_as_location_to_move != move_spaceship():
+		spaceship_as_location_to_move = move_spaceship()
+		current_spaceship.move_spaceship_to(spaceship_as_location_to_move)
+		pass
+	pass
+	
+func _draw():
+	for i_ in grid_coord:
+		draw_circle(i_, 5, "BLACK")
+	for i_ in spaceship_grid.size():
+		if spaceship_grid_menace.size() > 0:
+			if spaceship_grid_menace[i_]:
+				draw_rect(Rect2(spaceship_grid[i_].x, spaceship_grid[i_].y, 10, 10), "RED")
+			if !spaceship_grid_menace[i_]:
+				draw_rect(Rect2(spaceship_grid[i_].x, spaceship_grid[i_].y, 10, 10), "BLUE")
 	pass
 
 func create_new_spaceship(_position_x, _posistion_y):
 	
 	var new_spaceship = spaceship.instantiate()
-	new_spaceship.position = Vector2(_position_x, _posistion_y)
+	new_spaceship.position = spaceship_init_location
 	current_spaceship = new_spaceship
 	add_child(new_spaceship)
 	pass
@@ -183,13 +205,37 @@ func gid_the_board():
 		pass
 	pass
 
-func _draw():
-	for i_ in grid_coord:
-		draw_circle(i_, 5, "BLACK")
-	for i_ in spaceship_grid:
-		draw_circle(i_, 5, "RED")
+func check_menace_board() -> Array:
+	var grid_menace : Array
+	for i_ in spaceship_grid.size():
+		grid_menace.append(false)
+		for j_ in asteroid_on_screen: 
+			#It just work
+			if j_ != null and (spaceship_grid[i_].distance_to(j_.position) < 100 or spaceship_grid[i_].distance_to(j_.position + j_.velocity) < 100):
+				grid_menace[i_] = true
+				break
+				pass
+			pass
+		pass
+	return grid_menace
 	pass
 
-func check_menace_board():
-	
+func move_spaceship() -> Vector2:
+	var position_to_move : Vector2 = current_spaceship.position
+	var position_danger : bool = false
+	for i_ in spaceship_grid.size():
+		if spaceship_grid[i_] == current_spaceship.position and spaceship_grid_menace[i_]:
+			position_danger = true
+			break
+			pass
+		pass
+	if position_danger:
+		for i_ in spaceship_grid.size():
+			if spaceship_grid_menace[i_]:
+				position_to_move = spaceship_grid[i_]
+				break
+				pass
+			pass
+		pass
+	return position_to_move
 	pass
