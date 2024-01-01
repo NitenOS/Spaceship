@@ -9,16 +9,16 @@ func _ready():
 	pass
 
 func _process(delta):
-	if destination != position:
+	if is_moving:
 		rotation = position.angle_to_point(destination)
 		velocity = transform.x * 200
-		is_moving = true
-		print(position)
+		if position.distance_to(destination) < 10:
+			position = destination
+			velocity = Vector2(0, 0)
+			is_moving = false
+			pass
 		pass
-	else:
-		is_moving = false
-		velocity = Vector2(0, 0)
-		pass
+	pass
 	pass
 	
 func _physics_process(delta):
@@ -40,4 +40,5 @@ func set_menace(grid_board : Array, size_case_board : int) -> Array:
 
 func move_spaceship_to(destination_ : Vector2):
 	destination = destination_
+	is_moving = true
 	pass

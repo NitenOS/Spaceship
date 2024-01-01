@@ -18,6 +18,7 @@ var spaceship_current_life : int
 var spaceship_current_look : int
 const spaceship_max_life : int = 3
 var grid_coord : Array
+var size_case_board : int = 50
 var spaceship_grid : Array
 var spaceship_grid_menace : Array
 var spaceship_as_location_to_move : Vector2 = spaceship_init_location
@@ -112,14 +113,14 @@ func _process(delta):
 		pass
 		
 
-	
+	spaceship_grid = current_spaceship.set_menace(grid_coord, size_case_board)
 	spaceship_grid_menace = check_menace_board()
 	queue_redraw()
-	if spaceship_as_location_to_move != move_spaceship():
-		spaceship_as_location_to_move = move_spaceship()
-		current_spaceship.move_spaceship_to(spaceship_as_location_to_move)
+	
+	if spaceship_is_in_danger() and current_spaceship.is_moving == false:
+		current_spaceship.move_spaceship_to(find_new_position())
 		pass
-	pass
+	
 	
 func _draw():
 	for i_ in grid_coord:
@@ -196,7 +197,6 @@ func spaceship_look_direction() -> int:
 	return closer_asteroid
 
 func gid_the_board():
-	var size_case_board : int = 100
 	var grid : int = 1000 / size_case_board
 	for i_ in grid:
 		for j_ in grid:
@@ -220,18 +220,20 @@ func check_menace_board() -> Array:
 	return grid_menace
 	pass
 
-func move_spaceship() -> Vector2:
-	var position_to_move : Vector2 = current_spaceship.position
-	var position_danger : bool = false
+func spaceship_is_in_danger() -> bool:
 	for i_ in spaceship_grid.size():
 		if spaceship_grid[i_] == current_spaceship.position and spaceship_grid_menace[i_]:
-			position_danger = true
-			break
+			return true
 			pass
 		pass
-	if position_danger:
+	return false
+	pass
+
+func find_new_position() -> Vector2:
+	var position_to_move : Vector2 = current_spaceship.position
+	if spaceship_is_in_danger():
 		for i_ in spaceship_grid.size():
-			if spaceship_grid_menace[i_]:
+			if !spaceship_grid_menace[i_]:
 				position_to_move = spaceship_grid[i_]
 				break
 				pass

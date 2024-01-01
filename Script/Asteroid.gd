@@ -5,7 +5,7 @@ var already_on_screen : bool = false
 const PROTO_ROCK = preload("res://Asset/Proto_rock.png")
 @onready var sprite_previsualisation : Sprite2D = $Sprite2D/Sprite2D
 
-var velocity_multiplier : int = 1
+var velocity_multiplier : int = 2
 var side : int
 var timer_ : float	
 
