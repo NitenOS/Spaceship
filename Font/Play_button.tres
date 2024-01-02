@@ -1,0 +1,7 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://bo7csmyhngw1s"]
+
+[ext_resource type="FontFile" uid="uid://bec4nhdgwi5i2" path="res://Font/dogica.ttf" id="1_ugxb2"]
+
+[resource]
+font = ExtResource("1_ugxb2")
+font_size = 40

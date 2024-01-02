@@ -11,9 +11,14 @@ config_version=5
 [application]
 
 config/name="Spaceship"
-run/main_scene="res://Level/LVL_Main.tscn"
-config/features=PackedStringArray("4.2", "Forward Plus")
+run/main_scene="res://Level/LVL_main_menu.tscn"
+config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Singletone="*res://Script/Singletone/singletone.gd"
+Singletone2="*res://Script/Singletone/singletone.gd"
 
 [display]
 

@@ -9,6 +9,7 @@ const ASTEROID_2 = preload("res://Asset/asteroid2.png")
 const ASTEROID_1 = preload("res://Asset/asteroid1.png")
 const CONTROL = preload("res://Asset/control.png")
 
+@onready var spaceship_life_node = $"../Spaceship_life"
 @onready var score = $"../Control/Score"
 
 
@@ -22,7 +23,7 @@ var current_spaceship : CharacterBody2D
 var spaceship_init_location := Vector2(500, 500)
 var spaceship_current_life : int
 var spaceship_current_look : int
-const spaceship_max_life : int = 3
+var spaceship_life : int = 3
 var grid_coord : Array
 var size_case_board : int = 50
 var spaceship_grid : Array
@@ -291,6 +292,12 @@ func spaceship_respawn(delta_):
 		spaceship_respawn_time -= delta_
 		print(spaceship_respawn_time)
 		if  spaceship_respawn_time <= 0:
+			spaceship_life -= 1
+			spaceship_life_node.get_child(spaceship_life).modulate.a = 0
+			if spaceship_life == 0:
+				Singletone.last_game_score = score.text
+				get_tree().change_scene_to_file("res://Level/LVL_game_over.tscn")
+				pass
 			create_new_spaceship(500, 500)
 			is_spaceship_respawning = false
 			spaceship_respawn_time = init_spaceship_respawn_time

@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://gm5u0x744dqd"]
+[gd_scene load_steps=4 format=3 uid="uid://gm5u0x744dqd"]
 
 [ext_resource type="Script" path="res://Script/Gestion.gd" id="1_475g8"]
+[ext_resource type="Texture2D" uid="uid://b0w6prk177qp" path="res://Asset/ship.png" id="2_4lbkr"]
+[ext_resource type="FontFile" uid="uid://bec4nhdgwi5i2" path="res://Font/dogica.ttf" id="3_xfc1e"]
 
 [node name="LVL_Main" type="Node2D"]
 
@@ -13,6 +15,23 @@ limit_bottom = 1000
 
 [node name="Gestion" type="Node2D" parent="."]
 script = ExtResource("1_475g8")
+
+[node name="Spaceship_life" type="Node2D" parent="."]
+
+[node name="life1" type="Sprite2D" parent="Spaceship_life"]
+position = Vector2(32, 64)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_4lbkr")
+
+[node name="life2" type="Sprite2D" parent="Spaceship_life"]
+position = Vector2(88, 64)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_4lbkr")
+
+[node name="life3" type="Sprite2D" parent="Spaceship_life"]
+position = Vector2(144, 64)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_4lbkr")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -34,6 +53,7 @@ offset_bottom = -41.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_xfc1e")
 text = "Press W for switch asteroid
 ARROW to move "
 horizontal_alignment = 1
@@ -42,17 +62,20 @@ horizontal_alignment = 1
 layout_mode = 1
 offset_left = 16.0
 offset_top = 8.0
-offset_right = 72.0
-offset_bottom = 32.0
+offset_right = 156.0
+offset_bottom = 29.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_xfc1e")
 theme_override_font_sizes/font_size = 20
 text = "Score :"
 
 [node name="Score" type="Label" parent="Control"]
-offset_left = 88.0
+layout_mode = 0
+offset_left = 168.0
 offset_top = 8.0
-offset_right = 176.0
-offset_bottom = 36.0
+offset_right = 256.0
+offset_bottom = 29.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_xfc1e")
 theme_override_font_sizes/font_size = 20
 text = "0"
