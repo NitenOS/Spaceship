@@ -3,34 +3,34 @@ extends CharacterBody2D
 @onready var visible_on_screen : VisibleOnScreenEnabler2D = $VisibleOnScreenEnabler2D
 var already_on_screen : bool = false
 const PROTO_ROCK = preload("res://Asset/Proto_rock.png")
-@onready var sprite_previsualisation : Sprite2D = $Sprite2D/Sprite2D
+const ASTEROID_1 = preload("res://Asset/asteroid1.png")
+const ASTEROID_2 = preload("res://Asset/asteroid2.png")
+const ASTEROID_3 = preload("res://Asset/asteroid3.png")
+@onready var sprite_control : Sprite2D = $Sprite2D/Sprite2D
+@onready var sprite_asteroid : Sprite2D = $Sprite2D
 
-var velocity_multiplier : int = 2
+var sprite_array : Array = [ASTEROID_1, ASTEROID_2, ASTEROID_3]
+var velocity_multiplier : int = 3
 var side : int
 var timer_ : float	
+var init_rotation = randf_range(-0.01, 0.01) 
 
 func _ready():
+	var sprite_select : int = randi() %3
+	print(sprite_select)
+	sprite_asteroid.texture = sprite_array[sprite_select]
 	spawn_off_screen()
-	view_previsualisation()
 	pass
 
 func _process(delta):
 	if visible_on_screen.is_on_screen():
 		already_on_screen = true
 		pass
-	timer_ = timer_ + delta
-	if timer_ > 0.1:
-		sprite_previsualisation.position = position * velocity * delta
-		timer_ = fmod(timer_, 0.1)
-		pass
+	rotation += init_rotation
+	pass
 
 func _physics_process(delta):
 	move_and_slide()
-	pass
-
-func view_previsualisation():
-	sprite_previsualisation.texture = PROTO_ROCK
-	sprite_previsualisation.modulate.a =  0.0
 	pass
 
 func is_off_scenne() -> bool:

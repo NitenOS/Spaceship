@@ -20,7 +20,7 @@ anchors_preset = 0
 offset_right = 1000.0
 offset_bottom = 1000.0
 
-[node name="Text_control" type="Label" parent="Control"]
+[node name="Label" type="Label" parent="Control"]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -37,22 +37,3 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Press W for switch asteroid
 ARROW to move "
 horizontal_alignment = 1
-
-[node name="Text_Score" type="Label" parent="Control"]
-layout_mode = 1
-offset_left = 16.0
-offset_top = 8.0
-offset_right = 72.0
-offset_bottom = 32.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 20
-text = "Score :"
-
-[node name="Score" type="Label" parent="Control"]
-offset_left = 88.0
-offset_top = 8.0
-offset_right = 176.0
-offset_bottom = 36.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 20
-text = "0"

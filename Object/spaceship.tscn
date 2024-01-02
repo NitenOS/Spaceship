@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://b2hghaqtv7gtp"]
 
 [ext_resource type="Script" path="res://Script/spaceship.gd" id="1_5yr10"]
-[ext_resource type="Texture2D" uid="uid://dolducbtwfp1b" path="res://Asset/Proto_ship.png" id="1_rkmgp"]
+[ext_resource type="Texture2D" uid="uid://b0w6prk177qp" path="res://Asset/ship.png" id="2_m8j67"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ykotx"]
 size = Vector2(100, 100)
@@ -10,8 +10,9 @@ size = Vector2(100, 100)
 scale = Vector2(0.5, 0.5)
 script = ExtResource("1_5yr10")
 
+[node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = 1.57079
+texture = ExtResource("2_m8j67")
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ykotx")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_rkmgp")

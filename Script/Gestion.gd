@@ -3,8 +3,14 @@ extends Node2D
 const control = preload("res://Object/Control_Astroid.tscn")
 const asteroid = preload("res://Object/asteroid.tscn")
 const spaceship = preload("res://Object/spaceship.tscn")
-const texture_placeholder_asteroid_control = preload("res://Asset/Proto_user_rock.png")
-const texture_placeholder_asteroid = preload("res://Asset/Proto_rock.png") 
+const texture_placeholder_asteroid_control = preload("res://Asset/asteroid3control.png")
+const texture_placeholder_asteroid = preload("res://Asset/asteroid3.png")
+const ASTEROID_2 = preload("res://Asset/asteroid2.png")
+const ASTEROID_1 = preload("res://Asset/asteroid1.png")
+const CONTROL = preload("res://Asset/control.png")
+
+@onready var score = $"../Control/Score"
+
 
 var asteroid_on_screen : Array = []
 var place_on_array : int = 0
@@ -22,12 +28,18 @@ var size_case_board : int = 50
 var spaceship_grid : Array
 var spaceship_grid_menace : Array
 var spaceship_as_location_to_move : Vector2 = spaceship_init_location
+var spaceship_respawn_time : float = 2
+var init_spaceship_respawn_time : float = 2
+var is_spaceship_respawning : bool = false
 
+var score_game : int = 0
 const max_time : float = 0.5
 var time_left : float = max_time
 
+
 func _ready():
 	
+	Engine.time_scale = 1
 	for _i in max_asteroid:
 		asteroid_on_screen.append(null)
 		pass
@@ -46,15 +58,16 @@ func _ready():
 	pass
 	
 func _process(delta):
-	
 	if wait_Xs(delta) :
 		create_new_asteroid()
 		time_left = max_time
 		pass
 		
-	#if current_spaceship.is_moving == false: spaceship_current_look = spaceship_look_direction()
+	spaceship_respawn(delta)
+	
+	if !is_spaceship_respawning and current_spaceship.is_moving == false: spaceship_current_look = spaceship_look_direction()
 		
-	#Check if a asteroid is out-of-screen
+	# Check if a asteroid is out-of-screen
 	# With this method we check le whole array every frame (I need to fix that... later)
 	for j in asteroid_on_screen.size():
 		if asteroid_on_screen[j] != null:
@@ -98,8 +111,9 @@ func _process(delta):
 			#Old asteroid on control get neutral texture
 			var asteroid_control : Node2D = asteroid_on_control.get_child(3)
 			asteroid_control.queue_free()
-			var asteroid_sprite : Sprite2D = asteroid_on_control.get_child(1)
-			asteroid_sprite.texture = texture_placeholder_asteroid
+			var asteroid_sprite : Sprite2D = asteroid_on_control.get_child(1).get_child(0)
+			asteroid_sprite.modulate.a = 0
+			#asteroid_sprite.texture = texture_placeholder_asteroid
 			take_control()
 			pass
 			
@@ -112,17 +126,38 @@ func _process(delta):
 		if i >= asteroid_on_screen.size(): i=0
 		pass
 		
-
-	spaceship_grid = current_spaceship.set_menace(grid_coord, size_case_board)
-	spaceship_grid_menace = check_menace_board()
-	queue_redraw()
 	
-	if spaceship_is_in_danger() and current_spaceship.is_moving == false:
+	#Destroy and respawn spaceship
+	if !is_spaceship_respawning and asteroid_on_screen[spaceship_current_look] != null and current_spaceship.position.distance_to(asteroid_on_screen[spaceship_current_look].position) <= 50:
+		print("Hit")
+		current_spaceship.queue_free()
+		is_spaceship_respawning = true
+		pass
+
+	if !is_spaceship_respawning:
+		spaceship_grid = current_spaceship.set_menace(grid_coord, size_case_board)
+		spaceship_grid_menace = check_menace_board()
+		pass
+	
+	if !is_spaceship_respawning and spaceship_is_in_danger() and current_spaceship.is_moving == false:
 		current_spaceship.move_spaceship_to(find_new_position())
 		pass
 	
 	
 func _draw():
+
+	draw_rect(Rect2(0, 0, 1000, 1000), "BLACK")
+	var nb_star : int = randi_range(10, 500)
+	var color : String = "WHITE"
+	for i_ in nb_star:
+		print(i_%2)
+		if i_ %2: 
+			color  = "GRAY"
+		else:
+			color = "WHITE"
+			pass
+		draw_circle(Vector2(randi_range(0, 1000), randi_range(0, 1000)), randf_range(0, 2), color)
+		pass
 	for i_ in grid_coord:
 		draw_circle(i_, 5, "BLACK")
 	for i_ in spaceship_grid.size():
@@ -138,6 +173,8 @@ func create_new_spaceship(_position_x, _posistion_y):
 	var new_spaceship = spaceship.instantiate()
 	new_spaceship.position = spaceship_init_location
 	current_spaceship = new_spaceship
+	for i_ in asteroid_on_screen:
+		if i_ != null: current_spaceship.add_collision_exception_with(i_)
 	add_child(new_spaceship)
 	pass
 
@@ -147,6 +184,9 @@ func create_new_asteroid():
 	if asteroid_on_screen[place_on_array] == null:
 		var new_asteroid = asteroid.instantiate()
 		asteroid_on_screen[place_on_array] = new_asteroid
+		for i_ in asteroid_on_screen:
+			if i_ != null : new_asteroid.add_collision_exception_with(i_)
+		if !is_spaceship_respawning: new_asteroid.add_collision_exception_with(current_spaceship)
 		add_child(new_asteroid)
 		pass
 	place_on_array += 1
@@ -159,8 +199,9 @@ func take_control():
 	asteroid_on_control = asteroid_on_screen[i]
 	
 	#New asteroid on control get control texture
-	var asteroid_sprite : Sprite2D = asteroid_on_control.get_child(1)
-	asteroid_sprite.texture = texture_placeholder_asteroid_control
+	var asteroid_sprite : Sprite2D = asteroid_on_control.get_child(1).get_child(0)
+	#asteroid_sprite.texture = texture_placeholder_asteroid_control
+	asteroid_sprite.modulate.a = 1
 	var new_control = control.instantiate()
 	asteroid_on_control.add_child(new_control)
 	pass
@@ -232,12 +273,25 @@ func spaceship_is_in_danger() -> bool:
 func find_new_position() -> Vector2:
 	var position_to_move : Vector2 = current_spaceship.position
 	if spaceship_is_in_danger():
+		var tab_ : Array 
+		for j_ in spaceship_grid.size(): tab_.append(j_)
+		tab_.shuffle()
 		for i_ in spaceship_grid.size():
-			if !spaceship_grid_menace[i_]:
-				position_to_move = spaceship_grid[i_]
+			if !spaceship_grid_menace[tab_[i_]]:
+				position_to_move = spaceship_grid[tab_[i_]]
 				break
 				pass
 			pass
 		pass
 	return position_to_move
+	pass
+
+func spaceship_respawn(delta_):
+	if is_spaceship_respawning:
+		spaceship_respawn_time -= delta_
+		print(spaceship_respawn_time)
+		if  spaceship_respawn_time <= 0:
+			create_new_spaceship(500, 500)
+			is_spaceship_respawning = false
+			spaceship_respawn_time = init_spaceship_respawn_time
 	pass
