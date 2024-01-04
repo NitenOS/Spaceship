@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://cy6ktn0js70io"]
+[gd_scene load_steps=5 format=3 uid="uid://cy6ktn0js70io"]
 
 [ext_resource type="Texture2D" uid="uid://508spcdf2pm2" path="res://Asset/Proto_rock.png" id="1_2ojwt"]
 [ext_resource type="Script" path="res://Script/bullet.gd" id="1_h4tgg"]
+[ext_resource type="AudioStream" uid="uid://csbmobf4ufewe" path="res://Asset/destroy.wav" id="3_yx1lx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qbggg"]
 size = Vector2(10, 10)
@@ -17,5 +18,10 @@ shape = SubResource("RectangleShape2D_qbggg")
 [node name="Sprite2D" type="Sprite2D" parent="Area2D"]
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("1_2ojwt")
+
+[node name="destroy" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_yx1lx")
+pitch_scale = 3.38
+mix_target = 2
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

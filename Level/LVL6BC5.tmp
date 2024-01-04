@@ -1,23 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://gm5u0x744dqd"]
+[gd_scene load_steps=4 format=3 uid="uid://gm5u0x744dqd"]
 
 [ext_resource type="Script" path="res://Script/Gestion.gd" id="1_475g8"]
-[ext_resource type="Script" path="res://Script/LVL_Main.gd" id="1_ljk2p"]
 [ext_resource type="Texture2D" uid="uid://b0w6prk177qp" path="res://Asset/ship.png" id="2_4lbkr"]
-[ext_resource type="AudioStream" uid="uid://csbmobf4ufewe" path="res://Asset/destroy.wav" id="2_bcpmw"]
-[ext_resource type="AudioStream" uid="uid://piliu20kskbr" path="res://Asset/shoot.wav" id="3_1x2c6"]
 [ext_resource type="FontFile" uid="uid://bec4nhdgwi5i2" path="res://Font/dogica.ttf" id="3_xfc1e"]
 
 [node name="LVL_Main" type="Node2D"]
-script = ExtResource("1_ljk2p")
-
-[node name="destroy" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("2_bcpmw")
-mix_target = 2
-
-[node name="shoot" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3_1x2c6")
-pitch_scale = 0.68
-mix_target = 2
 
 [node name="Camera2D" type="Camera2D" parent="."]
 scale = Vector2(27, 2.56)

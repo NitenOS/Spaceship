@@ -12,12 +12,11 @@ const ASTEROID_3 = preload("res://Asset/asteroid3.png")
 var sprite_array : Array = [ASTEROID_1, ASTEROID_2, ASTEROID_3]
 var velocity_multiplier : int = 3
 var side : int
-var timer_ : float	
+var timer_ : float	= 5
 var init_rotation = randf_range(-0.01, 0.01) 
 
 func _ready():
 	var sprite_select : int = randi() %3
-	print(sprite_select)
 	sprite_asteroid.texture = sprite_array[sprite_select]
 	spawn_off_screen()
 	pass
@@ -26,7 +25,8 @@ func _process(delta):
 	if visible_on_screen.is_on_screen():
 		already_on_screen = true
 		pass
-	rotation += init_rotation
+	sprite_asteroid.rotation += init_rotation
+	timer_ -= delta
 	pass
 
 func _physics_process(delta):
@@ -85,3 +85,4 @@ func spawn_off_screen():
 		velocity = Vector2(velocity_x,velocity_y)
 		pass
 	pass
+

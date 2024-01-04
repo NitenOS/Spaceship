@@ -16,7 +16,8 @@ var button_nav : int = 0
 func _ready():
 	tab_button = [play, quit]
 	tab_score = [score_1, score_2, score_3, score_4, score_5]
-	Singletone.all_score.sort()
+	Singletone.all_score.sort_custom(func(a, b): return a > b)
+
 	for i_ in tab_score.size():
 		if i_ >= Singletone.all_score.size(): break
 		tab_score[i_].text = str(Singletone.all_score[i_])

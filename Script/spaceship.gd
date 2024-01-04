@@ -1,6 +1,5 @@
 extends CharacterBody2D
 @onready var collision_shape_2d = $CollisionShape2D
-@onready var area_2d = $Area2D
 const BULLET = preload("res://Object/bullet.tscn")
 
 var spaceship_grid : Array
